@@ -5,6 +5,7 @@ BUILD_MODE ?= dev
 LIBRARY_TYPE ?= static
 LALTOOLS_SET ?= all
 PROCESSORS ?= 0
+GPRBUILD_EXTRA ?= ""
 
 ALL_LIBRARY_TYPES = static static-pic relocatable
 ALL_BUILD_MODES = dev prod AddressSanitizer
@@ -34,6 +35,7 @@ all:
 			-XXMLADA_BUILD=$(LIBRARY_TYPE) \
 			-XLALTOOLS_BUILD_MODE=$(BUILD_MODE) \
 			-XLALTOOLS_SET=$(LALTOOLS_SET) \
+			$(GPRBUILD_EXTRA) \
 			-P $$proj -p -j$(PROCESSORS) ; \
 	done
 
@@ -46,7 +48,8 @@ lib:
 			rm -f obj/lib/$$kind/*.lexch; \
 			gprbuild -v -k \
 				-XLIBRARY_TYPE=$$kind \
-				-XLALTOOLS_BUILD_MODE=$(BUILD_MODE) \
+				-XLALTOOLS\_BUILD_MODE=$(BUILD_MODE) \
+				$(GPRBUILD_EXTRA) \
 				-P $$proj -p -j$(PROCESSORS) ; \
 		done ; \
 	done
@@ -56,11 +59,12 @@ bin:
 	which gprbuild
 	which gcc
 	for proj in $(BIN_PROJECTS) ; do \
-		gprbuild -v -k \
+		gprbuild -vh -k \
 			-XLIBRARY_TYPE=$(LIBRARY_TYPE) \
 			-XXMLADA_BUILD=$(LIBRARY_TYPE) \
 			-XLALTOOLS_BUILD_MODE=$(BUILD_MODE) \
 			-XLALTOOLS_SET=$(LALTOOLS_SET) \
+			$(GPRBUILD_EXTRA) \
 			-P $$proj -p -j$(PROCESSORS) ; \
 	done
 
@@ -74,6 +78,7 @@ testsuite_drivers:
 			-XXMLADA_BUILD=$(LIBRARY_TYPE) \
 			-XLALTOOLS_BUILD_MODE=$(BUILD_MODE) \
 			-XLALTOOLS_SET=$(LALTOOLS_SET) \
+			$(GPRBUILD_EXTRA) \
 			-P $$proj -p -j$(PROCESSORS) ; \
 	done
 
